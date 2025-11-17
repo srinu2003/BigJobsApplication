@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningMessageChannel xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Message Channel for Job Search and Filter communication</description>
+    <isExposed>true</isExposed>
+    <lightningMessageFields>
+        <description>The search term entered by the user</description>
+        <fieldName>searchTerm</fieldName>
+    </lightningMessageFields>
+    <lightningMessageFields>
+        <description>Array of job positions that match the search criteria</description>
+        <fieldName>jobs</fieldName>
+    </lightningMessageFields>
+    <lightningMessageFields>
+        <description>Additional filter criteria for future filter component</description>
+        <fieldName>filters</fieldName>
+    </lightningMessageFields>
+    <masterLabel>Job Search Channel</masterLabel>
+</LightningMessageChannel>

@@ -1,0 +1,324 @@
+<template>
+    <h1 class="slds-text-heading_large slds-text-align_center slds-m-bottom_medium">
+        Job Application
+    </h1>
+    <p class="slds-text-body_medium slds-text-align_center">
+        Apply for the position of <strong>{positionName}</strong> in <strong>{positionDepartment}</strong> located at <strong>{positionLocation}</strong>.
+    </p>
+
+    <div class="slds-m-vertical_medium">
+        <lightning-progress-indicator current-step={currentStep} type="base" variant="base">
+            <lightning-progress-step label="Email" value="1"></lightning-progress-step>
+            <lightning-progress-step label="Personal" value="2"></lightning-progress-step>
+            <lightning-progress-step label="Professional" value="3"></lightning-progress-step>
+            <lightning-progress-step label="Documents" value="4"></lightning-progress-step>
+            <lightning-progress-step label="Review" value="5"></lightning-progress-step>
+        </lightning-progress-indicator>
+    </div>
+
+    <lightning-card class="slds-card__body_inner">
+        <!-- STEP 1: Email Auth -->
+        <template if:true={isStep1}>
+        <h2 class="slds-text-heading_medium">Email Verification</h2>
+        <lightning-menu-divider></lightning-menu-divider>
+
+        <lightning-input type="email" label="Email Address" value={candidateFormData.Email__c} data-field="Email__c"
+            onchange={handleInputChange} onblur={handleFieldBlur} onkeyup={handleEmailKeyDown} required
+            message-when-value-missing="Email is required" message-when-pattern-mismatch="Please enter a valid email">
+        </lightning-input>
+
+        <div class="slds-media__body">
+            <lightning-icon icon-name="utility:info" size="x-small" class="slds-media__figure"></lightning-icon>
+            <span>This email will be used for all communications regarding your application.</span>
+        </div>
+
+        <div style="display: flex; justify-content: space-between;">
+            <lightning-button label="Cancel" onclick={handleCancel}></lightning-button>
+            <lightning-button variant="brand" label="Continue" onclick={handleNext}
+                disabled={isProcessing}></lightning-button>
+        </div>
+        </template>
+
+        <!-- STEP 2: Personal Information -->
+        <template if:true={isStep2}>
+            <h2 class="slds-text-heading_medium">Candiate Information</h2>
+            <lightning-menu-divider></lightning-menu-divider>
+            <template if:false={isNewCandidate}>
+                <div class="slds-m-around_medium slds-text-body_small">
+                    <lightning-icon icon-name="utility:success" size="small" variant="success"
+                        class="slds-media__figure"></lightning-icon>
+                    <span>Welcome back! Please verify and update your information.</span>
+                </div>
+            </template>
+            <lightning-menu-subheader label="Personal Information"></lightning-menu-subheader>
+
+            <div style="display: flex; flex-wrap: wrap-reverse; column-gap: var(--slds-g-spacing-4, 16px);">
+                <div style="flex: auto;">
+                    <lightning-combobox label="Salutation" value={candidateFormData.Salutation__c}
+                        data-field="Salutation__c" placeholder="Select..." options={salutationOptions}
+                        onchange={handleInputChange} onblur={handleFieldBlur}>
+                    </lightning-combobox>
+
+                    <lightning-input type="text" label="First Name" value={candidateFormData.First_Name__c}
+                        data-field="First_Name__c" onchange={handleInputChange} onblur={handleFieldBlur} required>
+                    </lightning-input>
+
+                    <lightning-input type="text" label="Last Name" value={candidateFormData.Last_Name__c}
+                        data-field="Last_Name__c" onchange={handleInputChange} onblur={handleFieldBlur}>
+                    </lightning-input>
+
+                    <lightning-input type="date" label="Date of Birth" value={candidateFormData.Date_of_Birth__c}
+                        data-field="Date_of_Birth__c" onchange={handleInputChange} onblur={handleFieldBlur} required>
+                    </lightning-input>
+
+                    <lightning-input type="email" label="Email" value={candidateFormData.Email__c} read-only>
+                    </lightning-input>
+                </div>
+                <c-profile-picture-form-component
+                    style="flex: auto; display: flex; flex-direction: column; justify-content: end; align-items: center;"
+                    candidate-record-id={candidateRecordId}></c-profile-picture-form-component>
+            </div>
+
+            <div style="display: flex; flex-wrap: wrap; column-gap: var(--slds-g-spacing-4, 16px);">
+                <lightning-input style="flex: auto;" type="tel" label="Phone" value={candidateFormData.Phone__c}
+                    data-field="Phone__c" onchange={handleInputChange} onblur={handleFieldBlur}
+                    readonly={candidateRecordId} required>
+                </lightning-input>
+
+                <lightning-input style="flex: auto;" type="tel" label="Mobile" value={candidateFormData.Mobile__c}
+                    data-field="Mobile__c" onchange={handleInputChange} onblur={handleFieldBlur}>
+                </lightning-input>
+            </div>
+
+            <lightning-input type="url" label="LinkedIn Profile (Optional)"
+                value={candidateFormData.LinkedIn_Profile__c} data-field="LinkedIn_Profile__c"
+                onchange={handleInputChange} onblur={handleFieldBlur}>
+            </lightning-input>
+            <lightning-menu-subheader label="Address Information"></lightning-menu-subheader>
+            <lightning-menu-divider></lightning-menu-divider>
+
+            <lightning-textarea label="Street Address" value={candidateFormData.Street_Address_1__c}
+                data-field="Street_Address_1__c" onchange={handleInputChange} onblur={handleFieldBlur}
+                placeholder="Enter your street address">
+            </lightning-textarea>
+
+            <lightning-textarea label="Street Address 2 (Optional)" value={candidateFormData.Street_Address_2__c}
+                data-field="Street_Address_2__c" onchange={handleInputChange} onblur={handleFieldBlur}
+                placeholder="Apartment, suite, unit, etc.">
+            </lightning-textarea>
+
+            <div style="display: flex; flex-wrap: wrap; column-gap: var(--slds-g-spacing-4, 16px)">
+                <lightning-input style="flex: auto;" type="text" label="City" value={candidateFormData.City__c}
+                    data-field="City__c" onchange={handleInputChange} onblur={handleFieldBlur}>
+                </lightning-input>
+
+                <lightning-input style="flex: auto;" type="text" label="State/Province"
+                    value={candidateFormData.State_Province__c} data-field="State_Province__c"
+                    onchange={handleInputChange} onblur={handleFieldBlur}>
+                </lightning-input>
+
+                <lightning-input style="flex: auto;" type="text" label="Zip/Postal Code"
+                    value={candidateFormData.Zip_Postal_Code__c} data-field="Zip_Postal_Code__c"
+                    onchange={handleInputChange} onblur={handleFieldBlur}>
+                </lightning-input>
+
+                <lightning-input style="flex: auto;" type="text" label="Country" value={candidateFormData.Country__c}
+                    data-field="Country__c" onchange={handleInputChange} onblur={handleFieldBlur}>
+                </lightning-input>
+            </div>
+
+
+            <div style="display: flex; justify-content: space-between;">
+                <lightning-button label="Previous" onclick={handlePrevious}></lightning-button>
+                <lightning-button label="Next" variant="brand" onclick={handleNext}></lightning-button>
+            </div>
+
+        </template>
+
+        <!-- STEP 3: Professional Details -->
+        <template if:true={isStep3}>
+            <div class="step-content">
+                <h2 class="slds-text-heading_medium">Professional Details</h2>
+                <lightning-menu-divider></lightning-menu-divider>
+
+                <lightning-menu-subheader label="Profitional Background"></lightning-menu-subheader>
+
+                <lightning-combobox label="Highest Education Level" value={candidateFormData.Highest_Education_Level__c}
+                    data-field="Highest_Education_Level__c" placeholder="Select highest education level..."
+                    options={highestEducationOptions} onchange={handleInputChange} onblur={handleFieldBlur} required>
+                </lightning-combobox>
+
+                <lightning-input type="number" label="Years of Experience"
+                    value={candidateFormData.Years_of_Experience__c} data-field="Years_of_Experience__c"
+                    onchange={handleInputChange} onblur={handleFieldBlur} min="0" max="75" step="1">
+                </lightning-input>
+
+                <lightning-input type="checkbox" label="Currently Employed"
+                    checked={candidateFormData.Currently_Employed__c} onchange={handleInputChange}
+                    onblur={handleFieldBlur}>
+                </lightning-input>
+
+                <template if:true={candidateFormData.Currently_Employed__c}>
+                    <lightning-input type="text" label="Current Employer" value={candidateFormData.Current_Employer__c}
+                        data-field="Current_Employer__c" onchange={handleInputChange} onblur={handleFieldBlur}>
+                    </lightning-input>
+                </template>
+
+                <lightning-textarea label="Work Experience Summary" value={candidateFormData.Work_Experience_Notes__c}
+                    data-field="Work_Experience_Notes__c" onchange={handleInputChange} onblur={handleFieldBlur}
+                    placeholder="Brief summary of your work experience...">
+                </lightning-textarea>
+
+                <lightning-menu-subheader label="Identity Documents"></lightning-menu-subheader>
+
+                <lightning-combobox label="Identity Document Type" value={candidateFormData.Identity_Document_Type__c}
+                    data-field="Identity_Document_Type__c" placeholder="Select document type..."
+                    options={identityDocTypeOptions} onchange={handleInputChange} onblur={handleFieldBlur} required>
+                </lightning-combobox>
+
+                <lightning-input type="text" label="Identity Document Number"
+                    value={candidateFormData.Identity_Document_Number__c} data-field="Identity_Document_Number__c"
+                    onchange={handleInputChange} onblur={handleFieldBlur} required>
+                </lightning-input>
+
+                <lightning-input type="text" label="PAN Card Number (Optional)"
+                    value={candidateFormData.PAN_Card_Number__c} data-field="PAN_Card_Number__c"
+                    onchange={handleInputChange} onblur={handleFieldBlur} pattern="[A-Z]{5}[0-9]{4}[A-Z]{1}"
+                    message-when-pattern-mismatch="Please enter a valid PAN number (e.g., ABCDE1234F)">
+                </lightning-input>
+
+                <lightning-input type="checkbox"
+                    label="I consent to the collection and processing of my personal data for recruitment purposes"
+                    data-field="Data_Privacy_Consent"
+                    message-when-value-missing="You must consent to data privacy to proceed." required>
+                </lightning-input>
+
+                <div style="display: flex; justify-content: space-between;">
+                    <lightning-button label="Previous" onclick={handlePrevious}>
+                    </lightning-button>
+                    <lightning-button variant="brand" label="Submit Information" disabled={isDisableNext}
+                        onclick={handleNext}>
+                    </lightning-button>
+                </div>
+            </div>
+        </template>
+
+        <!-- Sice Job_Application__c need to be created before uploading Resume. I need prompt usser to apply for This Posiotion one more time, Then 
+         - Creat a Job_Application__c record and then allow upload Resume -->
+
+        <!-- STEP 4: Review & Create Job Application -->
+        <template if:true={isStep4}>
+            <div>
+                <h2 class="slds-text-heading_medium slds-text-align_center">Review & Submit Application</h2>
+                <lightning-menu-divider></lightning-menu-divider>
+                <div style="display: flex; flex-wrap: wrap; column-gap: var(--slds-g-spacing-4, 16px);">
+                    <div style="flex: auto;">
+                        <h3 class="slds-text-title_caps slds-m-vertical_small">Personal Information</h3>
+                        <dt class="slds-text-color_weak">Name:</dt>
+                        <dd>{candidateFormData.Salutation__c} {candidateFormData.First_Name__c}
+                            {candidateFormData.Last_Name__c}</dd>
+                        <dt class="slds-text-color_weak">Email:</dt>
+                        <dd>{candidateFormData.Email__c}</dd>
+                        <dt class="slds-text-color_weak">Phone:</dt>
+                        <dd>{candidateFormData.Phone__c}</dd>
+                    </div>
+                    <div style="flex: auto;">
+                        <h3 class="slds-text-title_caps slds-m-vertical_small">Professional Details</h3>
+                        <dt class="slds-text-color_weak">Education:</dt>
+                        <dd>{candidateFormData.Highest_Education_Level__c}</dd>
+                        <dt class="slds-text-color_weak">Experience:</dt>
+                        <dd>{candidateFormData.Years_of_Experience__c} years</dd>
+                        <dt class="slds-text-color_weak">ID Type:</dt>
+                        <dd>{candidateFormData.Identity_Document_Type__c}</dd>
+                    </div>
+                </div>
+                <lightning-menu-subheader label="Application Details"></lightning-menu-subheader>
+
+                <lightning-combobox label="How did you hear about this position?" value={applicationFormData.Source__c}
+                    placeholder="Select source..." options={sourceOptions} onchange={handleApplicationInputChange}>
+                </lightning-combobox>
+                <lightning-textarea label="Cover Letter (Optional)" value={applicationFormData.Cover_Letter__c}
+                    placeholder="Tell us why you're interested in this position..." rows="5"
+                    onchange={handleApplicationInputChange}>
+                </lightning-textarea>
+
+                <div class="slds-m-vertical_small slds-box slds-theme_alert-texture">
+                    <p class="slds-text-body_small">By checking this box, you acknowledge that:</p>
+                    <ul class="slds-list_dotted">
+                        <li>Your data will be stored securely and used only for recruitment purposes</li>
+                        <li>You have the right to access or correct your data at any time</li>
+                        <li>Your data will be retained for 2 years or until you request deletion</li>
+                    </ul>
+                </div>
+                <lightning-input type="checkbox"
+                    label="I acknowledge that my data will be stored and processed as per the data privacy policy"
+                    data-field="Data_Privacy_Acknowledgment"
+                    message-when-value-missing="You must acknowledge the data privacy policy to proceed." required>
+                </lightning-input>
+                <div class="slds-align_absolute-center">
+                    <lightning-button variant="brand" label="Submit Application" onclick={handleSubmitApplication}
+                        disabled={isProcessing}>
+                    </lightning-button>
+                </div>
+            </div>
+        </template>
+
+        <!-- STEP 5: Resume Upload Page with Tabs -->
+        <template if:true={isStep5}>
+        <h2 class="slds-text-heading_medium slds-text-align_center slds-m-bottom_medium">Upload Resume</h2>
+        <div class="slds-box slds-theme_alert-texture slds-m-bottom_medium slds-media">
+            <lightning-icon icon-name="utility:info" size="x-small" class="slds-media__figure"></lightning-icon>
+            <div>
+                <strong>Supported file types:</strong> PDF (.pdf), Word Documents (.doc, .docx), Images (.jpg,
+                .jpeg, .png)<br>
+                <strong>Maximum file size:</strong> 3 MB for Documents, 1 MB for Images.<br>
+            </div>
+        </div>
+        <lightning-tabset class="slds-m-bottom_large">
+            <lightning-tab label="Upload New Document">
+                <div class="slds-m-around_medium">
+                    <lightning-file-upload label="Upload Resume" name="resumeUploader" accept=".pdf,.doc,.docx"
+                        record-id={jobApplicationId}
+                        file-field-name="Career_Guest_Record_fileupload__c" file-field-value="JOB_a04g50000006OndAAE_RESUME"
+                        onuploadfinished={handleuploadfinished} disabled={isProcessing}>
+                    </lightning-file-upload>
+                </div>
+            </lightning-tab>
+            <lightning-tab label="Select Existing Document">
+                <div class="slds-m-around_medium">
+                    <!-- List existing documents for selection -->
+                    <template for:each={existingDocuments} for:item="doc">
+                        <div key={doc.id}
+                            class="slds-box slds-m-bottom_small slds-grid slds-grid_align-spread slds-p-around_small slds-theme_shade">
+                            <span class="slds-text-title_bold">{doc.title}</span>
+                            <lightning-button label="Select" variant="neutral" onclick={handleSelectExistingDocument}
+                                data-doc-id={doc.id}></lightning-button>
+                        </div>
+                    </template>
+                    <template lwc:if={existingDocuments.length}>
+                        <div class="slds-text-align_right slds-m-top_small">
+                            <span class="slds-badge slds-theme_success">{existingDocuments.length} document(s)
+                                found</span>
+                        </div>
+                    </template>
+                    <template lwc:else>
+                        <div class="slds-text-color_weak slds-m-top_small">No existing documents found.</div>
+                    </template>
+                </div>
+            </lightning-tab>
+        </lightning-tabset>
+        <div class="slds-align_absolute-center">
+            <lightning-button variant="outline" label="Finish 🎉" onclick={handleFinishUpload} disabled={isProcessing}>
+            </lightning-button>
+        </div>
+        </template>
+
+        <template if:true={isProcessing}>
+            <div class="spinner-container">
+                <lightning-spinner alternative-text="Submitting application..." size="medium">
+                </lightning-spinner>
+            </div>
+        </template>
+
+    </lightning-card>
+</template>

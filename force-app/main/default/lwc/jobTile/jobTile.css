@@ -1,0 +1,7 @@
+:host lightning-card {
+    --slds-c-card-heading-font-size: 1.7rem;
+    --slds-c-card-heading-font-weight: 400;
+    --slds-c-card-body-spacing-inline-start: 1rem;
+    --slds-c-card-body-spacing-inline-end: 1rem;
+    --slds-c-card-footer-text-align: right;
+}

@@ -1,0 +1,70 @@
+<template>
+    <lightning-card class="slds-p-around_large">
+        <template if:true={position}>
+            <h1 class="slds-text-heading_large slds-text-align_center">{position.Name}</h1>
+            <div class="slds-m-around_medium">
+                <p><strong>Department:</strong> {position.Department__c}</p>
+                <p><strong>Location:</strong> {position.Location__c}</p>
+                <p><strong>Experience Level:</strong> {position.Experience_Level__c}</p>
+                <p><strong>Salary Range:</strong> {position.Salary_Range__c}</p>
+                <p><strong>Deadline:</strong> <lightning-formatted-date-time
+                        value={position.Application_Deadline__c}></lightning-formatted-date-time>
+                </p>
+                <template if:true={position.Pay_Grade__c}>
+                    <p><strong>Pay Grade:</strong> {position.Pay_Grade__c}</p>
+                </template>
+                <p><strong>Status:</strong> {position.Status__c}</p>
+                <template if:true={position.Remaining_Openings__c}>
+                    <p><strong>Remaining Openings:</strong> {position.Remaining_Openings__c}</p>
+                </template>
+            </div>
+
+            <template if:true={position.Job_Description__c}>
+                <h2 class="slds-text-heading_medium slds-m-around_medium">Job Description</h2>
+                <lightning-formatted-rich-text class="slds-m-left_large"
+                    value={position.Job_Description__c}></lightning-formatted-rich-text>
+            </template>
+
+            <template if:true={position.Skills_Required__c}>
+                <h2 class="slds-text-heading_medium slds-m-around_medium">Skills Required</h2>
+                <lightning-formatted-rich-text class="slds-m-left_large"
+                    value={position.Skills_Required__c}></lightning-formatted-rich-text>
+            </template>
+
+            <template if:true={position.Education__c}>
+                <h2 class="slds-text-heading_medium slds-m-around_medium">Education Requirements</h2>
+                <lightning-formatted-rich-text class="slds-m-left_large"
+                    value={position.Education__c}></lightning-formatted-rich-text>
+            </template>
+
+            <div class="slds-m-around_x-large slds-align_absolute-center">
+                <button class="slds-button slds-button_brand" onclick={handleApplyNow}>Apply for this Position</button>
+            </div>
+        </template>
+
+        <template if:true={isLoading}>
+            <div class="slds-p-around_medium slds-text-align_center">
+                <lightning-spinner alternative-text="Loading position details..." size="medium"></lightning-spinner>
+            </div>
+        </template>
+
+        <template if:true={error}>
+            <div class="slds-illustration slds-p-around_medium ">
+                <h3 class="slds-text-heading_medium">Error Loading Position</h3>
+                <p class="slds-text-body_regular">{error}</p>
+            </div>
+        </template>
+
+        <template if:false={position}>
+            <template if:false={isLoading}>
+                <template if:false={error}>
+                    <div class="slds-illustration slds-p-around_medium ">
+                        <h3 class="slds-text-heading_medium">Position Not Found</h3>
+                        <p class="slds-text-body_regular">The position you're looking for could not be found.
+                        </p>
+                    </div>
+                </template>
+            </template>
+        </template>
+    </lightning-card>
+</template>

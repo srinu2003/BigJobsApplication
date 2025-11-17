@@ -1,0 +1,22 @@
+<template>
+    <img lwc:if={imageDoc} src={imageDoc} alt="Document Id Preview"
+        style="margin-top: 1rem; border-radius: 4px; width: 120px; height: 150px;" />
+    <div lwc:else> No Profile Photo Uploaded.</div>
+
+    <lightning-input type="file" label="Update Profile Photo" accept={acceptedFormats}
+        onchange={handleFileChange}></lightning-input>
+
+    <div lwc:if={docIdError} class="slds-text-color_error">
+        <span>{docIdError}</span>
+    </div>
+    <div class="slds-media__body" style="flex: none;">
+        <lightning-icon icon-name="utility:info" size="x-small" class="slds-media__figure"></lightning-icon>
+        <span>Max file Size 1MB.</span>
+    </div>
+    <template if:true={isProcessing}>
+        <div class="spinner-container">
+            <lightning-spinner alternative-text="Uploading..." size="x-small">
+            </lightning-spinner>
+        </div>
+    </template>
+</template>

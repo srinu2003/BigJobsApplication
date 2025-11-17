@@ -1,0 +1,18 @@
+<template>
+    <div class="job-listings-container">
+        <div class="job-grid">
+            <template for:each={positions} for:item="position">
+                <c-job-tile 
+                    key={position.Id}
+                    position={position}>
+                </c-job-tile>
+            </template>
+        </div>
+
+        <template if:false={hasPositions}>
+            <div class="no-jobs">
+                <p>No positions available at this time.</p>
+            </div>
+        </template>
+    </div>
+</template>

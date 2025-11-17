@@ -1,0 +1,130 @@
+import { LightningElement, wire } from 'lwc';
+import { subscribe, unsubscribe, MessageContext } from 'lightning/messageService';
+import JOB_SEARCH_CHANNEL from '@salesforce/messageChannel/JobSearchChannel__c';
+
+export default class CareersJobListings extends LightningElement {
+    positions = [];
+    subscription = null;
+
+    @wire(MessageContext)
+    messageContext;
+
+    connectedCallback() {
+        // Set mock positions
+        // if (!this.positions || this.positions.length === 0) {
+        //     this.positions = [
+        //         {
+        //             Id: 'MOCK1',
+        //             Name: 'Frontend Developer',
+        //             Location__c: 'New York, NY',
+        //             Department__c: 'Engineering',
+        //             Education__c: 'Bachelor\'s Degree in Computer Science',
+        //             Job_Description__c: 'You can filter records based on field values, for example, to filter according to category or to query and retrieve changes that are tracked in a user\'s profile feed by using WITH filteringExpression. This optional clause can be added to a SELECT statement of a SOQL query.',
+        //             Job_Title__c: 'Software Engineer',
+        //             CreatedDate: '2024-06-01',
+        //             Experience_Level__c: 'Mid-Level',
+        //             Pay_Grade__c: 'P5',
+        //             Salary_Range__c: '$80,000 - $120,000',
+        //             Application_Deadline__c: '2024-07-15',
+        //             Skills_Required__c: 'JavaScript, HTML, CSS, LWC',
+        //             Remaining_Openings__c: 3
+        //         },
+        //         {
+        //             Id: 'MOCK2',
+        //             Name: 'Backend Developer',
+        //             Location__c: 'San Francisco, CA',
+        //             Department__c: 'Engineering',
+        //             Education__c: 'Bachelor\'s Degree in Software Engineering',
+        //             Job_Description__c: 'Design and implement scalable backend services and APIs. Work with databases, microservices architecture, and cloud infrastructure.',
+        //             Job_Title__c: 'Senior Backend Engineer',
+        //             CreatedDate: '2024-06-05',
+        //             Experience_Level__c: 'Senior',
+        //             Pay_Grade__c: 'P6',
+        //             Salary_Range__c: '$120,000 - $160,000',
+        //             Application_Deadline__c: '2024-07-20',
+        //             Skills_Required__c: 'Java, Spring Boot, SQL, AWS',
+        //             Remaining_Openings__c: 2
+        //         },
+        //         {
+        //             Id: 'MOCK3',
+        //             Name: 'Product Manager',
+        //             Location__c: 'Remote',
+        //             Department__c: 'Product',
+        //             Education__c: 'Bachelor\'s Degree in Business or related field',
+        //             Job_Description__c: 'Lead product development initiatives, define roadmaps, and collaborate with cross-functional teams to deliver exceptional user experiences.',
+        //             Job_Title__c: 'Product Manager',
+        //             CreatedDate: '2024-06-10',
+        //             Experience_Level__c: 'Mid-Level',
+        //             Pay_Grade__c: 'P5',
+        //             Salary_Range__c: '$90,000 - $130,000',
+        //             Application_Deadline__c: '2024-07-30',
+        //             Skills_Required__c: 'Agile, Product Strategy, User Research',
+        //             Remaining_Openings__c: 1
+        //         },
+        //         {
+        //             Id: 'MOCK4',
+        //             Name: 'Data Scientist',
+        //             Location__c: 'Boston, MA',
+        //             Department__c: 'Analytics',
+        //             Education__c: 'Master\'s Degree in Data Science or Statistics',
+        //             Job_Description__c: 'Analyze complex datasets, build predictive models, and provide actionable insights to drive business decisions.',
+        //             Job_Title__c: 'Data Scientist',
+        //             CreatedDate: '2024-06-12',
+        //             Experience_Level__c: 'Senior',
+        //             Pay_Grade__c: 'P6',
+        //             Salary_Range__c: '$110,000 - $150,000',
+        //             Application_Deadline__c: '2024-08-01',
+        //             Skills_Required__c: 'Python, Machine Learning, SQL, Tableau',
+        //             Remaining_Openings__c: 2
+        //         },
+        //         {
+        //             Id: 'MOCK5',
+        //             Name: 'UX Designer',
+        //             Location__c: 'Austin, TX',
+        //             Department__c: 'Design',
+        //             Education__c: 'Bachelor\'s Degree in Design or related field',
+        //             Job_Description__c: 'Create intuitive and engaging user experiences through user research, wireframing, prototyping, and usability testing.',
+        //             Job_Title__c: 'UX Designer',
+        //             CreatedDate: '2024-06-15',
+        //             Experience_Level__c: 'Entry-Level',
+        //             Pay_Grade__c: 'P4',
+        //             Salary_Range__c: '$65,000 - $90,000',
+        //             Application_Deadline__c: '2024-07-25',
+        //             Skills_Required__c: 'Figma, User Research, Prototyping',
+        //             Remaining_Openings__c: 1
+        //         }
+        //     ];
+        // }
+        this.subscribeToMessageChannel();
+    }
+
+    disconnectedCallback() {
+        this.unsubscribeFromMessageChannel();
+    }
+
+    subscribeToMessageChannel() {
+        if (!this.subscription) {
+            this.subscription = subscribe(
+                this.messageContext,
+                JOB_SEARCH_CHANNEL,
+                (message) => this.handleMessage(message)
+            );
+        }
+    }
+
+    unsubscribeFromMessageChannel() {
+        unsubscribe(this.subscription);
+        this.subscription = null;
+    }
+
+    handleMessage(message) {
+        console.log('Received message via LMS:', message);
+        this.positions = message.jobs || [];
+        // to handle message.filters will see
+        // Get from filter compoent, to be implement in future
+    }
+
+    get hasPositions() {
+        return this.positions && this.positions.length > 0;
+    }
+}

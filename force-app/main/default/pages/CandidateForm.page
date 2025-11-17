@@ -1,0 +1,36 @@
+<apex:page standardController="Candidate__c">
+    <apex:detail subject="{!Candidate__c.Id}"/>
+    <apex:form >
+        
+        <apex:pageBlock title="Candidate Registration">
+            <apex:pageMessages />
+            
+            <apex:pageBlockSection title="Personal Information" columns="2">
+                <apex:repeat value="{!$ObjectType.Candidate__c.FieldSets.Personal_Information}" var="field">
+                    <apex:inputField value="{!Candidate__c[field]}" required="{!field.required || field.dbrequired}" />
+                </apex:repeat>
+            </apex:pageBlockSection>
+            
+            <apex:pageBlockSection title="Address" columns="2" collapsible="true">
+                <apex:repeat value="{!$ObjectType.Candidate__c.FieldSets.Address_Information}" var="field">
+                    <apex:inputField value="{!Candidate__c[field]}" required="{!field.required || field.dbrequired}" />
+                </apex:repeat>
+            </apex:pageBlockSection>
+            
+            <!-- <apex:pageBlockSection title="Professional Details" columns="2" collapsible="true">
+                <apex:repeat value="{!$ObjectType.Candidate__c.FieldSets.Professional_Details}" var="field">
+                    <apex:inputField value="{!Candidate__c[field]}" required="{!field.required || field.dbrequired}" />
+                </apex:repeat>
+            </apex:pageBlockSection> -->
+            
+            <!-- <apex:pageBlockSection title="Privacy & Consent" columns="2" id="consentSection">
+                <apex:inputField value="{!Candidate__c.Data_Privacy_Consent__c}" />
+            </apex:pageBlockSection> -->
+            
+            <apex:pageBlockButtons >
+                <apex:commandButton value="Submit" action="{!save}" />
+                <apex:commandButton value="Cancel" action="{!cancel}" />
+            </apex:pageBlockButtons>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

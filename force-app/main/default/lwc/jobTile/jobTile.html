@@ -1,0 +1,52 @@
+<template>
+    <div class="slds-m-around_xx-small">
+        <lightning-card variant="base">
+            <div slot="title">
+                <span style="text-wrap: wrap;">{position.Name}</span><br />
+            </div>
+            <div slot="actions">
+                <span class="slds-badge slds-m-right_x-small">{position.Department__c}</span>
+                <lightning-formatted-date-time class="slds-text-body_small" value={position.CreatedDate} year="numeric"
+                    month="short" day="2-digit">
+                </lightning-formatted-date-time>
+            </div>
+            <div slot="footer">
+                <lightning-button label="Apply Now" onclick={handleApplyNow} variant="brand"
+                    class="slds-m-right_x-small"></lightning-button>
+                <lightning-button label="View Full Details" onclick={handleViewDetails} variant="base"
+                    icon-name="utility:chevronright" icon-position="right">
+                </lightning-button>
+            </div>
+            <!-- slds-text-color_weak -->
+            <div class="slds-grid slds-wrap">
+                <div class="slds-col slds-size_1-of-4">
+                    <lightning-icon icon-name="utility:pinned" size="xx-small"
+                        class="slds-m-right_xx-small"></lightning-icon>
+                    {position.Location__c}
+                </div>
+                <div class="slds-col slds-size_1-of-4">
+                    <lightning-icon icon-name="utility:metrics" size="xx-small"
+                        class="slds-m-right_xx-small"></lightning-icon>
+                    {position.Experience_Level__c}
+                </div>
+                <div class="slds-col slds-size_1-of-4">
+                    <lightning-icon icon-name="utility:success" size="xx-small"
+                        class="slds-m-right_xx-small"></lightning-icon>
+                    {position.Remaining_Openings__c} Open
+                </div>
+                <div class="slds-col slds-size_1-of-4">
+                    <lightning-icon icon-name="utility:clock" size="xx-small"
+                        class="slds-m-right_xx-small"></lightning-icon>
+                    <lightning-formatted-date-time value={position.Application_Deadline__c} year="numeric" month="short"
+                        day="2-digit"></lightning-formatted-date-time>
+                </div>
+                <template lwc:if={position.Job_Description__c}>
+                    <div class="slds-col slds-size_1-of-1">
+                        <strong>Job Description:</strong>
+                        <p>{position.Job_Description__c}</p>
+                    </div>
+                </template>
+            </div>
+        </lightning-card>
+    </div>
+</template>
