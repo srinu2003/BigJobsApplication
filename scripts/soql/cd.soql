@@ -1,0 +1,1 @@
+FIND 'US' IN ALL FIELDS RETURNING Position__c ( NAME, Location__c, CreatedDate, Application_Deadline__c, Department__c, Education__c, Experience_Level__c, Job_Description__c, Salary_Range__c, Skills_Required__c, Remaining_Openings__c, Pay_Grade__c)

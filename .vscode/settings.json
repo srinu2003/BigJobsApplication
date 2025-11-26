@@ -7,6 +7,12 @@
   },
   "xml.preferences.showSchemaDocumentationType": "none",
   "salesforcedx-vscode-core.show-cli-success-msg": false,
-  "salesforce.einsteinForDevelopers.enable": false,
-  "salesforce.einsteinForDevelopers.enableAutocompletions": false
+  "salesforce.einsteinForDevelopers.enable": true,
+  "salesforce.einsteinForDevelopers.enableAutocompletions": false,
+  "xml.fileAssociations": [
+    {
+      "pattern": "**/*.js-meta.xml",
+      "systemId": "${workspaceFolder}/.vscode/sfdc-lwc-meta.xsd"
+    }
+  ]
 }
