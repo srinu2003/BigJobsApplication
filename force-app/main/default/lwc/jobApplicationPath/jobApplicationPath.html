@@ -1,0 +1,29 @@
+<template>
+    <article class="slds-card">
+        <div class="slds-card__body slds-card__body_inner">
+                <div class="slds-popover">
+                <span style="visibility: visible;" class="slds-popover_dark slds-nubbin_bottom" role="dialog">
+                    Sample Stage Value
+                </span>
+            </div>
+            
+
+            <span onmouseover={showTooltip}>
+                <lightning-progress-indicator current-step={currentStage} type="path" variant="base">
+                    <template for:each={stagePicklistValues} for:item="stage">
+                        <lightning-progress-step label={stage.label} value={stage.value} key={stage.label}
+                            onclick={handleClick} onfocus={handleFocus}>
+                            <div slot="tooltip">
+                                <p>{stage.label} Stage</p>
+                            </div>
+                        </lightning-progress-step>
+                    </template>
+                </lightning-progress-indicator>
+            </span>
+
+            <lightning-button icon-name="utility:check" variant="brand" label="Mark Stage as Complete"
+                title="Update the Applciation Stage" onclick={handleStagePathUpdate}>
+            </lightning-button>
+        </div>
+    </article>
+</template>

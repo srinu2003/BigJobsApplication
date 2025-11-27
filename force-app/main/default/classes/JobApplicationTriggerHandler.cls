@@ -47,10 +47,10 @@ public with sharing class JobApplicationTriggerHandler {
 
             // 2. Stage__c Path Validation.
             if (ja.Stage__c != oldJa.Stage__c) {
-                if (oldJa.Stage__c == 'New' && ja.Stage__c != 'Phone Screening') {
-                    ja.addError('Stage__c', 'Next Stage after "New" must be "Phone Screening".');
-                } else if (oldJa.Stage__c == 'Phone Screening' && ja.Stage__c != 'Technical Interview') {
-                    ja.addError('Stage__c', 'Next Stage after "Phone Screening" must be "Technical Interview".');
+                if (oldJa.Stage__c == 'New' && ja.Stage__c != 'Screening') {
+                    ja.addError('Stage__c', 'Next Stage after "New" must be "Screening".');
+                } else if (oldJa.Stage__c == 'Screening' && ja.Stage__c != 'Technical Interview') {
+                    ja.addError('Stage__c', 'Next Stage after "Screening" must be "Technical Interview".');
                 }
             }
         }
